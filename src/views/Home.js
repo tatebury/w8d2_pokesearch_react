@@ -22,16 +22,29 @@ export default class Home extends Component {
         };
     }
 
+    removeDuplicates=(inputArr)=>{
+        let unique = [...new Set(inputArr)];
+        return unique; 
+    }
+
     handleSubmit=({name})=>{
+        let newArr = this.state.pokemon;
+        newArr = this.removeDuplicates(newArr);
+        this.setState({
+            pokemon: newArr,
+            badName: false
+        }, ()=>console.log(this.state.pokemon))
+
         fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
-            .then(res=>res.json())
-            .then(data=>{
-                this.setState({
-                    pokemon: [data],
-                    badName: false
-                }, ()=>console.log(this.state.pokemon))
-            })
-            .catch(error=>{console.error(error); this.setState({badName:true})})
+        .then(res=>res.json())
+        .then(data=>{
+            this.setState({
+                pokemon: [data],
+                badName: false
+            }, ()=>console.log(this.state.pokemon))
+        })
+        .catch(error=>{console.error(error); this.setState({badName:true})})
+
     }    
 
     render() {
@@ -85,7 +98,7 @@ export default class Home extends Component {
                                 <td>{poke.stats[0].base_stat}</td>
                                 <td>{poke.stats[2].base_stat}</td>
                                 <td>{poke.stats[1].base_stat}</td>
-                                <td><img src={poke.sprites.front_shiny}/></td>
+                                <td><img src={poke.sprites.front_shiny} alt="pokemon-sprite" /></td>
                                 </tr>
                             )
                         )}
